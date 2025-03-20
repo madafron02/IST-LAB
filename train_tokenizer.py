@@ -47,14 +47,15 @@ if __name__ == "__main__":
     run_on_main(
         clean_dataset,
         kwargs={
-            "data_folder": hparams["data_folder"],
-            "tr_splits": hparams["train_splits"],
-            "dev_splits": hparams["dev_splits"],
-            "te_splits": hparams["test_splits"],
-            "save_folder": hparams["output_folder"],
-            "merge_lst": hparams["train_splits"],
-            "merge_name": "train.csv",
-            "skip_prep": hparams["skip_prep"],
+            "dataset_name": "Jasmin"
+            # "data_folder": hparams["data_folder"],
+            # "tr_splits": hparams["train_splits"],
+            # "dev_splits": hparams["dev_splits"],
+            # "te_splits": hparams["test_splits"],
+            # "save_folder": hparams["output_folder"],
+            # "merge_lst": hparams["train_splits"],
+            # "merge_name": "train.csv",
+            # "skip_prep": hparams["skip_prep"],
         },
     )
 

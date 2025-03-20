@@ -11,7 +11,7 @@
 
 # Load modules:
 module load miniconda3
-conda activate /scratch/mfron/IST-LAB/setup/ist-env
+conda activate /scratch/mfron/IST-ASR
 
 module load 2023r1
 module load cuda/11.6
