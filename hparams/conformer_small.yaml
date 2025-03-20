@@ -22,10 +22,10 @@ train_log: !ref <output_folder>/train_log.txt
 # speechbrain HuggingFace repository. However, a local path pointing to a
 # directory containing the lm.ckpt and tokenizer.ckpt may also be specified
 # instead. E.g if you want to use your own LM / tokenizer.
-pretrained_lm_tokenizer_path: speechbrain/asr-transformer-transformerlm-librispeech
+pretrained_lm_tokenizer_path: /scratch/mfron/IST-LAB/save/1000_unigram.model
 
 # Data files
-data_folder: !PLACEHOLDER  # e.g., /path/to/LibriSpeech
+data_folder: /scratch/mfron/IST-LAB/data  # e.g., /path/to/LibriSpeech
 # If RIRS_NOISES dir exists in /localscratch/xxx_corpus/RIRS_NOISES
 # then data_folder_rirs should be /localscratch/xxx_corpus
 # otherwise the dataset will automatically be downloaded
@@ -34,11 +34,9 @@ train_splits: ["train-clean-100", "train-clean-360", "train-other-500"]
 dev_splits: ["dev-clean"]
 test_splits: ["test-clean", "test-other"]
 skip_prep: False
-train_csv: !ref <output_folder>/train.csv
-valid_csv: !ref <output_folder>/dev-clean.csv
-test_csv:
-    - !ref <output_folder>/test-clean.csv
-    - !ref <output_folder>/test-other.csv
+train_csv: !ref <data_folder>/train.csv
+valid_csv: !ref <data_folder>/val.csv
+test_csv: !ref <data_folder>/test.csv
 
 ####################### Training Parameters ####################################
 
@@ -113,7 +111,7 @@ num_decoder_layers: 4
 d_ffn: 1024
 transformer_dropout: 0.1
 activation: !name:torch.nn.GELU
-output_neurons: 5000
+output_neurons: 1000
 
 # Outputs
 blank_index: 0
