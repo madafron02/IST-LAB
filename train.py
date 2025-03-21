@@ -294,25 +294,23 @@ def dataio_prepare(hparams):
     valid_data = valid_data.filtered_sorted(sort_key="duration")
 
     # test is separate
-    test_datasets = {}
-    for csv_file in hparams["test_csv"]:
-        name = Path(csv_file).stem
-        test_datasets[name] = sb.dataio.dataset.DynamicItemDataset.from_csv(
-            csv_path=csv_file, replacements={"data_root": data_folder}
-        )
-        test_datasets[name] = test_datasets[name].filtered_sorted(
-            sort_key="duration"
-        )
 
-    datasets = [train_data, valid_data] + [i for k, i in test_datasets.items()]
-    valtest_datasets = [valid_data] + [i for k, i in test_datasets.items()]
+    test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
+        csv_path=hparams['test_csv'], replacements={"data_root": data_folder}
+    )
+    test_data = test_data.filtered_sorted(
+        sort_key="duration"
+    )
+
+    datasets = [train_data, valid_data, test_data] 
+    valtest_datasets = [valid_data, test_data]
 
     # We get the tokenizer as we need it to encode the labels when creating
     # mini-batches.
     tokenizer = hparams["tokenizer"]
 
     # 2. Define audio pipeline:
-    @sb.utils.data_pipeline.takes("wav")
+    @sb.utils.data_pipeline.takes("filepath") #TODO column name of filepath
     @sb.utils.data_pipeline.provides("sig")
     def audio_pipeline(wav):
         sig = sb.dataio.dataio.read_audio(wav)
@@ -320,7 +318,7 @@ def dataio_prepare(hparams):
 
     sb.dataio.dataset.add_dynamic_item(valtest_datasets, audio_pipeline)
 
-    @sb.utils.data_pipeline.takes("wav")
+    @sb.utils.data_pipeline.takes("filepath") #TODO column name of filepath
     @sb.utils.data_pipeline.provides("sig")
     def audio_pipeline_train(wav):
         # Speed Perturb is done here so it is multi-threaded with the
@@ -336,7 +334,7 @@ def dataio_prepare(hparams):
     sb.dataio.dataset.add_dynamic_item([train_data], audio_pipeline_train)
 
     # 3. Define text pipeline:
-    @sb.utils.data_pipeline.takes("wrd")
+    @sb.utils.data_pipeline.takes("transcription") #TODO column name of transcription
     @sb.utils.data_pipeline.provides(
         "wrd", "tokens_list", "tokens_bos", "tokens_eos", "tokens"
     )
@@ -382,7 +380,7 @@ def dataio_prepare(hparams):
     return (
         train_data,
         valid_data,
-        test_datasets,
+        test_data,
         tokenizer,
         train_batch_sampler,
         valid_batch_sampler,
@@ -399,7 +397,7 @@ if __name__ == "__main__":
     sb.utils.distributed.ddp_init_group(run_opts)
 
     # 1.  # Dataset prep (parsing Librispeech)
-    from jasmin_prepare_new import clean_dataset  # noqa
+    # from jasmin_prepare_new import clean_dataset  # noqa
 
     # Create experiment directory
     sb.create_experiment_directory(
@@ -409,26 +407,26 @@ if __name__ == "__main__":
     )
 
     # multi-gpu (ddp) save data preparation
-    run_on_main(
-        clean_dataset,
-        kwargs={
-            "dataset_name": "Jasmin"
-            # "data_folder": hparams["data_folder"],
-            # "tr_splits": hparams["train_splits"],
-            # "dev_splits": hparams["dev_splits"],
-            # "te_splits": hparams["test_splits"],
-            # "save_folder": hparams["output_folder"],
-            # "merge_lst": hparams["train_splits"],
-            # "merge_name": "train.csv",
-            # "skip_prep": hparams["skip_prep"],
-        },
-    )
+    # run_on_main(
+    #     clean_dataset,
+    #     kwargs={
+    #         "dataset_name": "Jasmin"
+    #         # "data_folder": hparams["data_folder"],
+    #         # "tr_splits": hparams["train_splits"],
+    #         # "dev_splits": hparams["dev_splits"],
+    #         # "te_splits": hparams["test_splits"],
+    #         # "save_folder": hparams["output_folder"],
+    #         # "merge_lst": hparams["train_splits"],
+    #         # "merge_name": "train.csv",
+    #         # "skip_prep": hparams["skip_prep"],
+    #     },
+    # )
 
     # here we create the datasets objects as well as tokenization and encoding
     (
         train_data,
         valid_data,
-        test_datasets,
+        test_data,
         tokenizer,
         train_bsampler,
         valid_bsampler,
@@ -486,15 +484,14 @@ if __name__ == "__main__":
     )
 
     # Testing
-    if not os.path.exists(hparams["output_wer_folder"]):
-        os.makedirs(hparams["output_wer_folder"])
+    # if not os.path.exists(hparams["output_wer_folder"]):
+    #     os.makedirs(hparams["output_wer_folder"])
 
-    for k in test_datasets.keys():  # keys are test_clean, test_other etc
-        asr_brain.hparams.test_wer_file = os.path.join(
-            hparams["output_wer_folder"], f"wer_{k}.txt"
-        )
-        asr_brain.evaluate(
-            test_datasets[k],
-            max_key="ACC",
-            test_loader_kwargs=hparams["test_dataloader_opts"],
-        )
+    # asr_brain.hparams.test_wer_file = os.path.join(
+    #     hparams["output_wer_folder"], f"wer_{k}.txt"
+    # )
+    # asr_brain.evaluate(
+    #     test_data[k],
+    #     max_key="ACC",
+    #     test_loader_kwargs=hparams["test_dataloader_opts"],
+    # )

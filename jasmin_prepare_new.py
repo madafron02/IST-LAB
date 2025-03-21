@@ -108,12 +108,12 @@ def prepare_dataset(dataset_name, output_format="csv"):
 
     # Convert to entry with utterance id, speaker id, demographic group, and gender
     result_read = [
-        {'utt_id': utt_id, 'spk_id': data_list[0], 'demog': data_list[1], 'gender': data_list[2]}
+        {'ID': utt_id, 'spk_id': data_list[0], 'demog': data_list[1], 'gender': data_list[2]}
         for utt_id, data_list in dataset_read.items()
     ]
 
     for entry in result_read:
-        utt_id = entry['utt_id']
+        utt_id = entry['ID']
 
         entry['speaking_style'] = "read"
         entry['duration'] = utt2dur_read.get(utt_id)
@@ -145,12 +145,12 @@ def prepare_dataset(dataset_name, output_format="csv"):
 
     # Convert to entry with utterance id, speaker id, demographic group, and gender
     result_hmi = [
-        {'utt_id': utt_id, 'spk_id': data_list[0], 'demog': data_list[1], 'gender': data_list[2]}
+        {'ID': utt_id, 'spk_id': data_list[0], 'demog': data_list[1], 'gender': data_list[2]}
         for utt_id, data_list in dataset_hmi.items()
     ]
 
     for entry in result_hmi:
-        utt_id = entry['utt_id']
+        utt_id = entry['ID']
 
         entry['speaking_style'] = "hmi"
         entry['duration'] = utt2dur_hmi.get(utt_id)
@@ -186,6 +186,10 @@ def clean_dataset(dataset_name):
 
     # Keep only rows where demog is either 'NnT' or 'DT'
     df = df[df['demog'].isin(['NnT', 'DT'])]
+    
+    df["duration"] = df["duration"].str.strip("[]'").astype(float)
+    df["num_samples"] = df["num_samples"].str.strip("[]'").astype(int)
+    df["filepath"] = df["filepath"].str.strip("[]'")
     
     df.to_csv(f"{dataset_name}_cleaned.csv", index=False)
     

@@ -22,7 +22,7 @@ train_log: !ref <output_folder>/train_log.txt
 # speechbrain HuggingFace repository. However, a local path pointing to a
 # directory containing the lm.ckpt and tokenizer.ckpt may also be specified
 # instead. E.g if you want to use your own LM / tokenizer.
-pretrained_lm_tokenizer_path: /scratch/mfron/IST-LAB/save/1000_unigram.model
+pretrained_lm_tokenizer_path: /scratch/mfron/IST-LAB/save
 
 # Data files
 data_folder: /scratch/mfron/IST-LAB/data  # e.g., /path/to/LibriSpeech
@@ -33,7 +33,7 @@ data_folder: /scratch/mfron/IST-LAB/data  # e.g., /path/to/LibriSpeech
 train_splits: ["train-clean-100", "train-clean-360", "train-other-500"]
 dev_splits: ["dev-clean"]
 test_splits: ["test-clean", "test-other"]
-skip_prep: False
+skip_prep: True
 train_csv: !ref <data_folder>/train.csv
 valid_csv: !ref <data_folder>/val.csv
 test_csv: !ref <data_folder>/test.csv
@@ -329,8 +329,8 @@ acc_computer: !name:speechbrain.utils.Accuracy.AccuracyStats
 pretrainer: !new:speechbrain.utils.parameter_transfer.Pretrainer
     collect_in: !ref <save_folder>
     loadables:
-        lm: !ref <lm_model>
+        # lm: !ref <lm_model>
         tokenizer: !ref <tokenizer>
     paths:
-        lm: !ref <pretrained_lm_tokenizer_path>/lm.ckpt
-        tokenizer: !ref <pretrained_lm_tokenizer_path>/tokenizer.ckpt
+        # lm: !ref <pretrained_lm_tokenizer_path>/lm.ckpt
+        tokenizer: !ref <pretrained_lm_tokenizer_path>/1000_unigram.model
