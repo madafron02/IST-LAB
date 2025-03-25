@@ -215,6 +215,9 @@ def clean_dataset(dataset_name):
     # Keep only rows where demog is either 'NnT' or 'DT'
     df = df[df['demog'].isin(['NnT', 'DT'])]
     
+    # Modify the filepaths to not include '/dump/raw' in the beginning
+    df["filepath"] = df["filepath"].str.replace("dump/raw/", "JASMIN/kaldi_procesed/")
+    
     df["duration"] = df["duration"].str.strip("[]'").astype(float)
     df["num_samples"] = df["num_samples"].str.strip("[]'").astype(int)
     df["filepath"] = df["filepath"].str.strip("[]'")
@@ -266,9 +269,9 @@ def split_dataset(dataset_name):
     print(set(val_df['spk_id']).intersection(set(test_df['spk_id'])))
     
     # Save the splits to CSV
-    train_df.to_csv("train.csv", index=False)
-    val_df.to_csv("val.csv", index=False)
-    test_df.to_csv("test.csv", index=False)
+    train_df.to_csv("data/train.csv", index=False)
+    val_df.to_csv("data/val.csv", index=False)
+    test_df.to_csv("data/test.csv", index=False)
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser()

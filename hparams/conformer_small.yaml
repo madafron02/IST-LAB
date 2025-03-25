@@ -25,7 +25,8 @@ train_log: !ref <output_folder>/train_log.txt
 pretrained_lm_tokenizer_path: /scratch/mfron/IST-LAB/save
 
 # Data files
-data_folder: /scratch/mfron/IST-LAB/data  # e.g., /path/to/LibriSpeech
+csv_folder: /scratch/mfron/IST-LAB/data 
+data_folder: /scratch/mfron/IST-LAB/JASMIN/kaldi_processed  # e.g., /path/to/LibriSpeech
 # If RIRS_NOISES dir exists in /localscratch/xxx_corpus/RIRS_NOISES
 # then data_folder_rirs should be /localscratch/xxx_corpus
 # otherwise the dataset will automatically be downloaded
@@ -34,9 +35,9 @@ train_splits: ["train-clean-100", "train-clean-360", "train-other-500"]
 dev_splits: ["dev-clean"]
 test_splits: ["test-clean", "test-other"]
 skip_prep: True
-train_csv: !ref <data_folder>/train.csv
-valid_csv: !ref <data_folder>/val.csv
-test_csv: !ref <data_folder>/test.csv
+train_csv: !ref <csv_folder>/train.csv
+valid_csv: !ref <csv_folder>/val.csv
+test_csv: !ref <csv_folder>/test.csv
 
 ####################### Training Parameters ####################################
 
