@@ -7,7 +7,8 @@
 
 
 # Set up folders for reading from and writing to
-data_folder: /scratch/mfron/IST-LAB/data
+csv_folder: /scratch/mfron/IST-LAB/data
+data_folder: /scratch/mfron/IST-LAB/JASMIN/kaldi_processed
 output_folder: /scratch/mfron/IST-LAB/save
 
 # Path where data-specification files are stored
@@ -15,8 +16,8 @@ train_splits: ["train-clean-100", "train-clean-360", "train-other-500"]
 dev_splits: ["dev-clean"]
 test_splits: ["test-clean", "test-other"]
 skip_prep: False
-train_csv: !ref <data_folder>/train.csv
-valid_csv: !ref <data_folder>/valid.csv
+train_csv: !ref <csv_folder>/train.csv
+valid_csv: !ref <csv_folder>/valid.csv
 
 # Tokenizer parameters
 token_type: unigram  # ["unigram", "bpe", "char"]

@@ -3,12 +3,13 @@
 #SBATCH --job-name=train_asr
 #SBATCH --output=/scratch/mfron/IST-LAB/asr_train_logs/asr_example.%j.out    # Standard output log
 #SBATCH --error=/scratch/mfron/IST-LAB/asr_train_logs/asr_example.%j.err
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:30:00
+#SBATCH --partition=gpu-a100
+#SBATCH --time=10:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-cpu=1G
+#SBATCH --mem-per-cpu=2G
+#SBATCH --mail-type=START,END,FAIL
 #SBATCH --account=education-eemcs-courses-dsait4095
 
 # Load modules:
