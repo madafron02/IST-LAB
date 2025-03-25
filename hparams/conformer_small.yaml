@@ -111,7 +111,7 @@ num_decoder_layers: 4
 d_ffn: 1024
 transformer_dropout: 0.1
 activation: !name:torch.nn.GELU
-output_neurons: 1000
+output_neurons: 5000
 
 # Outputs
 blank_index: 0
@@ -333,4 +333,4 @@ pretrainer: !new:speechbrain.utils.parameter_transfer.Pretrainer
         tokenizer: !ref <tokenizer>
     paths:
         # lm: !ref <pretrained_lm_tokenizer_path>/lm.ckpt
-        tokenizer: !ref <pretrained_lm_tokenizer_path>/1000_unigram.model
+        tokenizer: !ref <pretrained_lm_tokenizer_path>/5000_unigram.model

@@ -1,5 +1,5 @@
 # ############################################################################
-# Tokenizer: subword BPE tokenizer with unigram 1K
+# Tokenizer: subword BPE tokenizer with unigram 5K
 # Training: Mini-LibriSpeech
 # Authors:  Abdel Heba 2021
 #           Mirco Ravanelli 2021
@@ -20,10 +20,9 @@ valid_csv: !ref <data_folder>/valid.csv
 
 # Tokenizer parameters
 token_type: unigram  # ["unigram", "bpe", "char"]
-token_output: 1000  # index(blank/eos/bos/unk) = 0
+token_output: 5000  # index(blank/eos/bos/unk) = 0
 character_coverage: 1.0
 # annotation_read: transcription # field to read
-# csv_read: wrd ---initially
 csv_read: transcription
 bos_id: 1
 eos_id: 2
