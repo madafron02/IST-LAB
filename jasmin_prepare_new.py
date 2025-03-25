@@ -181,8 +181,36 @@ def prepare_dataset(dataset_name, output_format="csv"):
 def clean_dataset(dataset_name):
     df = pd.read_csv(f"{dataset_name}_formatted.csv")
     
-    # Remove rows where '[LAUGH]' is present in the transcription
-    df = df[~df['transcription'].str.contains('\[LAUGH\]', regex=True, na=False)]
+
+    # Cleaning transcriptions
+    # The following Regular Expressions were used to check for punctuation: 
+    # .wav'\],.*[A-Z] -> None
+    # .wav'\],.*[0-9] -> !!YES!! (mostly "mp3" but also 6 for 6 o' clock)
+    # dashes are used in some places, but it seems to mean something (like a pause) so we leave it in
+
+    digit_to_dutch = {
+        '0': 'nul',
+        '1': 'een',
+        '2': 'twee',
+        '3': 'drie',
+        '4': 'vier',
+        '5': 'vijf',
+        '6': 'zes',
+        '7': 'zeven',
+        '8': 'acht',
+        '9': 'negen'
+    }
+    
+    def replace_digits_with_dutch(text):
+        parts = []
+        for char in text:
+            parts.append(digit_to_dutch[char] if char.isdigit() else char)
+        return ''.join(parts)
+
+    df['transcription'] = df['transcription'].apply(replace_digits_with_dutch)
+
+    # Remove rows where '[LAUGH]' is present in the transcription (NOT ANYMORE)
+    # df = df[~df['transcription'].str.contains('\[LAUGH\]', regex=True, na=False)]
 
     # Keep only rows where demog is either 'NnT' or 'DT'
     df = df[df['demog'].isin(['NnT', 'DT'])]
