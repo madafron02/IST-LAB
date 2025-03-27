@@ -222,10 +222,10 @@ def clean_dataset(dataset_name):
     df["num_samples"] = df["num_samples"].str.strip("[]'").astype(int)
     df["filepath"] = df["filepath"].str.strip("[]'")
     
-    df.to_csv(f"{dataset_name}_cleaned.csv", index=False)
+    df.to_csv(f"save/{dataset_name}_cleaned.csv", index=False)
     
 def split_dataset(dataset_name):
-    df = pd.read_csv(f"{dataset_name}_cleaned.csv")
+    df = pd.read_csv(f"save/{dataset_name}_cleaned.csv")
     
     # Split the dataset while maintaining balance
     # spk_groups = df.groupby('spk_id')
