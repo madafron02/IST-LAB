@@ -23,6 +23,7 @@ train_log: !ref <output_folder>/train_log.txt
 # directory containing the lm.ckpt and tokenizer.ckpt may also be specified
 # instead. E.g if you want to use your own LM / tokenizer.
 pretrained_lm_tokenizer_path: /scratch/mfron/IST-LAB/save
+pretrained_asr_path: /scratch/mfron/IST-LAB/results/conformer_small/7775/save/CKPT+2025-03-26+00-23-25+00
 
 # Data files
 csv_folder: /scratch/mfron/IST-LAB/data 
@@ -330,8 +331,10 @@ acc_computer: !name:speechbrain.utils.Accuracy.AccuracyStats
 pretrainer: !new:speechbrain.utils.parameter_transfer.Pretrainer
     collect_in: !ref <save_folder>
     loadables:
+        asr: !ref <asr_model>
         # lm: !ref <lm_model>
         tokenizer: !ref <tokenizer>
     paths:
+        asr: !ref <pretrained_asr_path>/model.ckpt
         # lm: !ref <pretrained_lm_tokenizer_path>/lm.ckpt
         tokenizer: !ref <pretrained_lm_tokenizer_path>/1000_unigram.model
