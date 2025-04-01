@@ -453,14 +453,19 @@ if __name__ == "__main__":
     hparams["pretrainer"].collect_files()
     hparams["pretrainer"].load_collected()
 
+    # This is where the model gets loaded
+    # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/train.py#L441-L448    
+    
     # Trainer initialization
     asr_brain = ASR(
         modules=hparams["modules"],
         opt_class=hparams["Adam"],
         hparams=hparams,
         run_opts=run_opts,
-        checkpointer=hparams["checkpointer"],
+        checkpointer=hparams["checkpointer"], # TODO put asr from scratch 
     )
+
+    # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/train_with_whisper.py#L316-L319
 
     # adding objects to trainer:
     asr_brain.tokenizer = hparams["tokenizer"]

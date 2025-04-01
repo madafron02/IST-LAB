@@ -264,7 +264,7 @@ noam_annealing: !new:speechbrain.nnet.schedulers.NoamScheduler
     lr_initial: !ref <lr_adam>
     n_warmup_steps: 25000
 
-checkpointer: !new:speechbrain.utils.checkpoints.Checkpointer
+checkpointer: !new:speechbrain.utils.checkpoints.Checkpointer #TODO check how speechbrain 
     checkpoints_dir: !ref <save_folder>
     recoverables:
         model: !ref <model>
