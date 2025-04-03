@@ -6,19 +6,21 @@ def split_into_demog_tests():
 
     test_data = pd.read_csv(f"{data_folder}/test.csv")
 
-    # Separate speakers into two groups based on "demog" column
-    test_datasets = {
-        "NnT": test_data[test_data["demog"] == "NnT"],
-        "DT": test_data[test_data["demog"] == "DT"],
-    }
+    # Define possible values
+    demog_values = ["NnT", "DT"]
+    speaking_styles = ["read", "hmi"]
 
-    # Sort datasets by "duration"
-    test_datasets["NnT"] = test_datasets["NnT"].sort_values(by="duration")
-    test_datasets["DT"] = test_datasets["DT"].sort_values(by="duration")
+    # Generate and save each combination
+    for demog in demog_values:
+        for style in speaking_styles:
+            subset = test_data[(test_data["demog"] == demog) & (test_data["speaking_style"] == style)]
+            subset = subset.sort_values(by="duration")  # Sort by duration
+            subset.to_csv(f"{data_folder}/test_{demog}_{style}.csv", index=False)
 
-    # Save to CSV
-    test_datasets["NnT"].to_csv("data/test_NnT.csv", index=False)
-    test_datasets["DT"].to_csv("data/test_DT.csv", index=False)
+# test_DT_read
+# test_DT_hmi
+# test_NnT_read
+# test_NnT_hmi
 
 if __name__ == "__main__":
     split_into_demog_tests()

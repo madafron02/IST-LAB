@@ -39,9 +39,16 @@ skip_prep: True
 train_csv: !ref <csv_folder>/train.csv
 valid_csv: !ref <csv_folder>/val.csv
 test_csv:
-    - !ref <csv_folder>/test_NnT.csv
-    - !ref <csv_folder>/test_DT.csv
+    - !ref <csv_folder>/test_DT_read.csv
+    - !ref <csv_folder>/test_DT_hmi.csv    
+    - !ref <csv_folder>/test_NnT_read.csv
+    - !ref <csv_folder>/test_NnT_hmi.csv
 
+
+# test_DT_read
+# test_DT_hmi
+# test_NnT_read
+# test_NnT_hmi
 ####################### Training Parameters ####################################
 
 # To make Transformers converge, the global bath size should be large enough.
