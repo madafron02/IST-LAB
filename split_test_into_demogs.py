@@ -1,11 +1,11 @@
 import speechbrain as sb
 import pandas as pd
 
-def split_into_demog_tests(hparams):
-    data_folder = hparams["data_folder"]
+def split_into_demog_tests():
+    data_folder = "/scratch/mfron/IST-LAB/data"
 
-    test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
-            csv_path=hparams['test_csv'], replacements={"data_root": data_folder}
+    test_data = pd.read_csv(
+            csv_path=f"{data_folder}/test.csv"
         )
 
     # Separate speakers into two groups based on "nativeness" column
