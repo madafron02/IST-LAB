@@ -512,6 +512,7 @@ if __name__ == "__main__":
         os.makedirs(hparams["output_wer_folder"])
 
     for k in test_datasets.keys():  # keys are DT, NnT
+        print(f"Currently testing: {k}")
         asr_brain.hparams.test_wer_file = os.path.join(
             hparams["output_wer_folder"], f"wer_{k}.txt"
         )
