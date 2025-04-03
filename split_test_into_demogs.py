@@ -8,15 +8,19 @@ def split_into_demog_tests():
             csv_path=f"{data_folder}/test.csv"
         )
 
-    # Separate speakers into two groups based on "nativeness" column
+    # Separate speakers into two groups based on "demog" column
     test_datasets = {
-        "NnT": test_data.filtered(lambda x: x["demog"] == "NnT"),
-        "DT": test_data.filtered(lambda x: x["demog"] == "DT"),
+        "NnT": test_data[test_data["demog"] == "NnT"],
+        "DT": test_data[test_data["demog"] == "DT"],
     }
 
-    test_datasets["NnT"] = test_datasets["NnT"].filtered_sorted(sort_key="duration")
-    test_datasets["DT"] = test_datasets["DT"].filtered_sorted(sort_key="duration")
+    # Sort datasets by "duration"
+    test_datasets["NnT"] = test_datasets["NnT"].sort_values(by="duration")
+    test_datasets["DT"] = test_datasets["DT"].sort_values(by="duration")
 
-
+    # Save to CSV
     test_datasets["NnT"].to_csv("data/test_NnT.csv", index=False)
     test_datasets["DT"].to_csv("data/test_DT.csv", index=False)
+
+if __name__ == "__main__":
+    split_into_demog_tests()
