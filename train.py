@@ -295,15 +295,19 @@ def dataio_prepare(hparams):
 
     # test is separate
 
-    test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
-        csv_path=hparams['test_csv'], replacements={"data_root": data_folder}
-    )
-    test_data = test_data.filtered_sorted(
-        sort_key="duration"
-    )
+    test_datasets = {}
+    for csv_file in hparams["test_csv"]:
+        name = Path(csv_file).stem
+        test_datasets[name] = sb.dataio.dataset.DynamicItemDataset.from_csv(
+            csv_path=csv_file, replacements={"data_root": data_folder}
+        )
+        test_datasets[name] = test_datasets[name].filtered_sorted(
+            sort_key="duration"
+        )
 
-    datasets = [train_data, valid_data, test_data] 
-    valtest_datasets = [valid_data, test_data]
+    datasets = [train_data, valid_data] + [i for k, i in test_datasets.items()]
+    valtest_datasets = [valid_data] + [i for k, i in test_datasets.items()]
+
 
     # In original Speechbrain file, there are multiple test datasets: 
     # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/train.py#L297-L305
@@ -426,11 +430,11 @@ if __name__ == "__main__":
     # from jasmin_prepare_new import clean_dataset  # noqa
 
     # Create experiment directory
-    sb.create_experiment_directory(
-        experiment_directory=hparams["output_folder"],
-        hyperparams_to_save=hparams_file,
-        overrides=overrides,
-    )
+    # sb.create_experiment_directory(
+    #     experiment_directory=hparams["output_folder"],
+    #     hyperparams_to_save=hparams_file,
+    #     overrides=overrides,
+    # )
 
     # multi-gpu (ddp) save data preparation
     # run_on_main(
@@ -506,13 +510,13 @@ if __name__ == "__main__":
             valid_dataloader_opts["collate_fn"] = collate_fn
 
     # Training
-    asr_brain.fit(
-        asr_brain.hparams.epoch_counter,
-        train_data,
-        valid_data,
-        train_loader_kwargs=train_dataloader_opts,
-        valid_loader_kwargs=valid_dataloader_opts,
-    )
+    # asr_brain.fit(
+    #     asr_brain.hparams.epoch_counter,
+    #     train_data,
+    #     valid_data,
+    #     train_loader_kwargs=train_dataloader_opts,
+    #     valid_loader_kwargs=valid_dataloader_opts,
+    # )
 
 ############################## Testing ##########################
 
