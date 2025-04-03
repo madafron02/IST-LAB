@@ -38,7 +38,9 @@ test_splits: ["test-clean", "test-other"]
 skip_prep: True
 train_csv: !ref <csv_folder>/train.csv
 valid_csv: !ref <csv_folder>/val.csv
-test_csv: !ref <csv_folder>/test.csv
+test_csv:
+    - !ref <csv_folder>/test_NnT.csv
+    - !ref <csv_folder>/test_DT.csv
 
 ####################### Training Parameters ####################################
 

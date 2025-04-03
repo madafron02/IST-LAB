@@ -295,31 +295,41 @@ def dataio_prepare(hparams):
 
     # test is separate
 
-    # In original Speechbrain file, there are multiple test datasets: 
-    # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/train.py#L297-L305
-
     test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
         csv_path=hparams['test_csv'], replacements={"data_root": data_folder}
     )
+    test_data = test_data.filtered_sorted(
+        sort_key="duration"
+    )
 
-    # The hparams['test_csv'] in the original Speechbrain Github stuff is:
-    # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/hparams/conformer_small.yaml#L39-L41
+    datasets = [train_data, valid_data, test_data] 
+    valtest_datasets = [valid_data, test_data]
 
-    # Separate speakers into two groups based on "nativeness" column
-    test_datasets = {
-        "NnT": test_data.filtered(lambda x: x["demog"] == "NnT"),
-        "DT": test_data.filtered(lambda x: x["demog"] == "DT"),
-    }
+    # In original Speechbrain file, there are multiple test datasets: 
+    # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/train.py#L297-L305
 
-    test_datasets["NnT"] = test_datasets["NnT"].filtered_sorted(sort_key="duration")
-    test_datasets["DT"] = test_datasets["DT"].filtered_sorted(sort_key="duration")
+    # test_data = sb.dataio.dataset.DynamicItemDataset.from_csv(
+    #     csv_path=hparams['test_csv'], replacements={"data_root": data_folder}
+    # )
 
-    #test_data = test_data.filtered_sorted(
-    #    sort_key="duration"
-    #)
+    # # The hparams['test_csv'] in the original Speechbrain Github stuff is:
+    # # https://github.com/speechbrain/speechbrain/blob/develop/recipes/LibriSpeech/ASR/transformer/hparams/conformer_small.yaml#L39-L41
 
-    datasets = [train_data, valid_data] + [i for k, i in test_datasets.items()]
-    valtest_datasets = [valid_data] + + [i for k, i in test_datasets.items()]
+    # # Separate speakers into two groups based on "nativeness" column
+    # test_datasets = {
+    #     "NnT": test_data.filtered(lambda x: x["demog"] == "NnT"),
+    #     "DT": test_data.filtered(lambda x: x["demog"] == "DT"),
+    # }
+
+    # test_datasets["NnT"] = test_datasets["NnT"].filtered_sorted(sort_key="duration")
+    # test_datasets["DT"] = test_datasets["DT"].filtered_sorted(sort_key="duration")
+
+    # #test_data = test_data.filtered_sorted(
+    # #    sort_key="duration"
+    # #)
+
+    # datasets = [train_data, valid_data] + [i for k, i in test_datasets.items()]
+    # valtest_datasets = [valid_data] + + [i for k, i in test_datasets.items()]
 
     # We get the tokenizer as we need it to encode the labels when creating
     # mini-batches.
@@ -508,11 +518,26 @@ if __name__ == "__main__":
 
     # orig: for k in test sets; here we still only have 1 (TODO: split into 2: native vs nonnative)
 
+    # if not os.path.exists(hparams["output_wer_folder"]):
+    #     os.makedirs(hparams["output_wer_folder"])
+
+    # for k in test_datasets.keys():  # keys are DT, NnT
+    #     print(f"Currently testing: {k}")
+    #     asr_brain.hparams.test_wer_file = os.path.join(
+    #         hparams["output_wer_folder"], f"wer_{k}.txt"
+    #     )
+    #     asr_brain.evaluate(
+    #         test_datasets[k],
+    #         max_key="ACC",
+    #         test_loader_kwargs=hparams["test_dataloader_opts"],
+    #     )
+
+    # Testing
     if not os.path.exists(hparams["output_wer_folder"]):
         os.makedirs(hparams["output_wer_folder"])
 
-    for k in test_datasets.keys():  # keys are DT, NnT
-        print(f"Currently testing: {k}")
+    for k in test_datasets.keys():  # keys are test_clean, test_other etc
+
         asr_brain.hparams.test_wer_file = os.path.join(
             hparams["output_wer_folder"], f"wer_{k}.txt"
         )
