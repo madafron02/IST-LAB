@@ -312,11 +312,15 @@ if __name__ == "__main__":
         checkpointer=hparams["checkpointer"],
         opt_class=hparams["whisper_opt_class"],
     )
+    
+    print(hparams["pretrainer"])
 
     # We load the pretrained whisper model
     if "pretrainer" in hparams.keys():
         hparams["pretrainer"].collect_files()
         hparams["pretrainer"].load_collected(asr_brain.device)
+        
+    print(hparams["pretrainer"])
 
     # We dynamically add the tokenizer to our brain class.
     # NB: This tokenizer corresponds to the one used for Whisper.

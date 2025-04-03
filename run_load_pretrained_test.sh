@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=test_asr_whisper
+#SBATCH --job-name=load_asr
 #SBATCH --partition=gpu-a100-small
 #SBATCH --time=00:10:00
 #SBATCH --ntasks=1
@@ -24,6 +24,6 @@ module load py-pyyaml
 module load py-tqdm
 module load ffmpeg
 
-srun python train_with_whisper.py hparams/train_whisper_lora.yaml
+srun python load_pretrained.py
 
 conda deactivate

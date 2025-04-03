@@ -14,7 +14,7 @@ train_log: !ref <output_folder>/train_log.txt
 
 # URL for the whisper model
 # Remove .nl if it doesn't work
-whisper_hub: openai/whisper-medium.nl
+whisper_hub: openai/whisper-medium.en
 whisper_folder: !ref <save_folder>/whisper_checkpoint
 
 # Normalize the english inputs with
@@ -175,3 +175,16 @@ error_rate_computer: !name:speechbrain.utils.metric_stats.ErrorRateStats
 
 cer_computer: !name:speechbrain.utils.metric_stats.ErrorRateStats
     split_tokens: True
+
+# pretrainer: !new:speechbrain.utils.parameter_transfer.Pretrainer
+#     collect_in: !ref <save_folder>
+#     loadables:
+#         whisper: !ref <whisper>
+#         whisper_opt: !ref <whisper_opt_class>
+#         scheduler_whisper: !ref <lr_annealing_whisper>
+#         counter: !ref <epoch_counter>
+#     paths:
+#         whisper: !ref <whisper_folder>
+#         whisper_opt: !ref <whisper_folder>
+#         scheduler_whisper: !ref <whisper_folder>
+#         counter: !ref <whisper_folder>
