@@ -4,9 +4,7 @@ import pandas as pd
 def split_into_demog_tests():
     data_folder = "/scratch/mfron/IST-LAB/data"
 
-    test_data = pd.read_csv(
-            csv_path=f"{data_folder}/test.csv"
-        )
+    test_data = pd.read_csv(f"{data_folder}/test.csv")
 
     # Separate speakers into two groups based on "demog" column
     test_datasets = {
