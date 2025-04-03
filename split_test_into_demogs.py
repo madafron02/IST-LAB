@@ -1,4 +1,5 @@
 import speechbrain as sb
+import pandas as pd
 
 def split_into_demog_tests(hparams):
     data_folder = hparams["data_folder"]
