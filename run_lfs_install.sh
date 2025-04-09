@@ -1,20 +1,17 @@
 #!/bin/bash
 
-#SBATCH --job-name=test_asr_whisper
+#SBATCH --job-name=setup
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:05:00
+#SBATCH --time=00:15:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-cpu=2G
-#SBATCH --mail-type=START,END,FAIL
+#SBATCH --mem-per-cpu=1G
 #SBATCH --account=education-eemcs-courses-dsait4095
 
 # Load modules:
-module load miniconda3
 conda activate /scratch/mfron/IST-ASR
 
-module purge
 module load 2023r1
 module load cuda/11.6
 module load openmpi
@@ -25,6 +22,11 @@ module load py-pyyaml
 module load py-tqdm
 module load ffmpeg
 
-python train_with_whisper.py hparams/train_hf_whisper.yaml --test_only
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda install git-lfs
+
+git lfs install
+git clone https://huggingface.co/openai/whisper-medium
 
 conda deactivate

@@ -1,7 +1,7 @@
 # ################################
-# Model: Whisper (Encoder-Decoder) + NLL + LoRA
+# Model: Whisper (Encoder-Decoder) + NLL
 # Augmentation: TimeDomainSpecAugment
-# Authors: Peter Plantinga 2024, Adel Moumen 2022 & 2024, Titouan Parcollet 2022
+# Authors: Adel Moumen 2022 & 2024, Titouan Parcollet 2022
 # ################################
 
 # Seed needs to be set at top of yaml, before objects with parameters are made
@@ -12,22 +12,21 @@ output_wer_folder: !ref <output_folder>/
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
 
-# URL for the whisper model
-# Remove .nl if it doesn't work
-whisper_hub: whisper-medium
+# URL for the biggest Fairseq english whisper model.
+whisper_hub: /scratch/mfron/IST-LAB/whisper-medium
 whisper_folder: !ref <save_folder>/whisper_checkpoint
-
 
 # Normalize the english inputs with
 # the same normalization done in the paper
 normalized_transcripts: True
 
 # Data files
+# data_folder: !PLACEHOLDER # e,g./path/to/LibriSpeech
 csv_folder: /scratch/mfron/IST-LAB/data 
 data_folder: /scratch/mfron/IST-LAB/JASMIN/kaldi_processed # e,g./path/to/LibriSpeech
-train_splits: ["train-clean-100"] #, "train-clean-360", "train-other-500"]
-dev_splits: ["dev-clean"]
-test_splits: ["dev-clean", "test-clean", "test-other"]
+train_splits: [""]
+dev_splits: [""]
+test_splits: ["test_DT_read", "test_DT_hmi", "test_NnT_read", "test_NnT_hmi"]
 skip_prep: True
 train_csv: !ref <csv_folder>/train.csv
 valid_csv: !ref <csv_folder>/val.csv
@@ -37,11 +36,11 @@ test_csv:
     - !ref <csv_folder>/test_NnT_read.csv
     - !ref <csv_folder>/test_NnT_hmi.csv
 
-ckpt_interval_minutes: 1 # save checkpoint every N min
+ckpt_interval_minutes: 10 # save checkpoint every N min
 
 ############################## Training Parameters #############################
 freeze_encoder: True
-number_of_epochs: 1
+number_of_epochs: 10
 weight_decay: 0.01
 lr_whisper: 1e-5
 warmup_steps: 500
@@ -54,17 +53,14 @@ sampling_rate: 16_000
 # With data_parallel batch_size is split into N jobs
 # With DDP batch_size is multiplied by N jobs
 # This setup works well with 1x 32GB GPU
-batch_size: 2
-test_batch_size: 2
-grad_accumulation_factor: 8
+batch_size: 16
+test_batch_size: 16
+grad_accumulation_factor: 1
 
 # Decoding parameters
 min_decode_ratio: 0.0
 max_decode_ratio: 1.0
 test_beam_size: 8
-
-# Lora configuration
-lora_rank: 16
 
 ####################### Model Parameters #######################################
 
@@ -116,20 +112,13 @@ epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter
 
 ############################## Models ##########################################
 
-whisper_pretrained: !new:speechbrain.lobes.models.huggingface_transformers.whisper.Whisper
-    source: !ref <whisper_hub> #TODO
+whisper: !new:speechbrain.lobes.models.huggingface_transformers.whisper.Whisper
+    source: !ref <whisper_hub>
     freeze_encoder: !ref <freeze_encoder>
     save_path: !ref <whisper_folder>
     language: "dutch"
     task: "transcribe"
     sampling_rate: !ref <sampling_rate>
-
-whisper: !new:speechbrain.nnet.adapters.AdaptedModel
-    model_to_adapt: !ref <whisper_pretrained>
-    adapter_class: !name:speechbrain.nnet.adapters.LoRA
-    all_linear: True
-    adapter_kwargs:
-        rank: !ref <lora_rank>
 
 log_softmax: !new:speechbrain.nnet.activations.Softmax
     apply_log: True
@@ -137,7 +126,7 @@ log_softmax: !new:speechbrain.nnet.activations.Softmax
 nll_loss: !name:speechbrain.nnet.losses.nll_loss
 
 modules:
-    whisper: !ref <whisper_pretrained> # prev:"whisper"
+    whisper: !ref <whisper>
 
 ############################## Decoding & optimiser ############################
 
@@ -165,7 +154,7 @@ lr_annealing_whisper: !new:speechbrain.nnet.schedulers.NoamScheduler
 checkpointer: !new:speechbrain.utils.checkpoints.Checkpointer
     checkpoints_dir: !ref <save_folder>
     recoverables:
-        whisper: !ref <whisper_pretrained> # TODO change to whisper when FT
+        whisper: !ref <whisper>
         scheduler_whisper: !ref <lr_annealing_whisper>
         counter: !ref <epoch_counter>
 
@@ -176,24 +165,3 @@ error_rate_computer: !name:speechbrain.utils.metric_stats.ErrorRateStats
 
 cer_computer: !name:speechbrain.utils.metric_stats.ErrorRateStats
     split_tokens: True
-
-pretrainer: !new:speechbrain.utils.parameter_transfer.Pretrainer
-    collect_in: !ref <save_folder>
-    loadables:
-        whisper: !ref <whisper_pretrained> #TODO we changed this from just <whisper>
-        whisper_opt: !ref <whisper_opt_class>
-        scheduler_whisper: !ref <lr_annealing_whisper>
-        counter: !ref <epoch_counter>
-    paths:
-        whisper: !ref <whisper_hub>/pytorch_model.bin 
-
-
-    # paths:
-    #     lm: !ref <pretrained_lm_tokenizer_path>/lm.ckpt
-    #     tokenizer: !ref <pretrained_lm_tokenizer_path>/tokenizer.ckpt
-
-
-    # pretrain = Pretrainer(loadables={'model': model}, paths={'model': 'speechbrain/spkrec-ecapa-voxceleb/embedding_model.ckpt'})
-    # # We download the pretrained model from HuggingFace in this case
-    # pretrain.collect_files()
-    # pretrain.load_collected()

@@ -274,29 +274,29 @@ if __name__ == "__main__":
         hparams = load_hyperpyyaml(fin, overrides)
 
     # Create experiment directory
-    # sb.create_experiment_directory(
-    #     experiment_directory=hparams["output_folder"],
-    #     hyperparams_to_save=hparams_file,
-    #     overrides=overrides,
-    # )
+    sb.create_experiment_directory(
+        experiment_directory=hparams["output_folder"],
+        hyperparams_to_save=hparams_file,
+        overrides=overrides,
+    )
 
     # Dataset prep (parsing Librispeech)
-    # from librispeech_prepare import prepare_librispeech  # noqa
+    from librispeech_prepare import prepare_librispeech  # noqa
 
     # # multi-gpu (ddp) save data preparation
-    # run_on_main(
-    #     prepare_librispeech,
-    #     kwargs={
-    #         "data_folder": hparams["data_folder"],
-    #         "tr_splits": hparams["train_splits"],
-    #         "dev_splits": hparams["dev_splits"],
-    #         "te_splits": hparams["test_splits"],
-    #         "save_folder": hparams["output_folder"],
-    #         "merge_lst": hparams["train_splits"],
-    #         "merge_name": "train.csv",
-    #         "skip_prep": hparams["skip_prep"],
-    #     },
-    # )
+    run_on_main(
+        prepare_librispeech,
+        kwargs={
+            "data_folder": hparams["data_folder"],
+            "tr_splits": hparams["train_splits"],
+            "dev_splits": hparams["dev_splits"],
+            "te_splits": hparams["test_splits"],
+            "save_folder": hparams["output_folder"],
+            "merge_lst": hparams["train_splits"],
+            "merge_name": "train.csv",
+            "skip_prep": hparams["skip_prep"],
+        },
+    )
 
     # Defining tokenizer and loading it
     tokenizer = hparams["whisper"].tokenizer
@@ -313,27 +313,27 @@ if __name__ == "__main__":
         opt_class=hparams["whisper_opt_class"],
     )
     
-    print(hparams["pretrainer"])
+    # print(hparams["pretrainer"])
 
     # We load the pretrained whisper model
     if "pretrainer" in hparams.keys():
         hparams["pretrainer"].collect_files()
-        hparams["pretrainer"].load_collected(asr_brain.device)
-        
-    print(hparams["pretrainer"])
+        hparams["pretrainer"].load_collected(asr_brain.device) #TODO we removed asr_brain.device from arg
+
+    # print(hparams["pretrainer"])
 
     # We dynamically add the tokenizer to our brain class.
     # NB: This tokenizer corresponds to the one used for Whisper.
     asr_brain.tokenizer = tokenizer
 
     # Training
-    # asr_brain.fit(
-    #     asr_brain.hparams.epoch_counter,
-    #     train_data,
-    #     valid_data,
-    #     train_loader_kwargs=hparams["train_loader_kwargs"],
-    #     valid_loader_kwargs=hparams["valid_loader_kwargs"],
-    # )
+    asr_brain.fit(
+        asr_brain.hparams.epoch_counter,
+        train_data,
+        valid_data,
+        train_loader_kwargs=hparams["train_loader_kwargs"],
+        valid_loader_kwargs=hparams["valid_loader_kwargs"],
+    )
 
     # Testing
     os.makedirs(hparams["output_wer_folder"], exist_ok=True)
