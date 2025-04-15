@@ -265,7 +265,7 @@ def dataio_prepare(hparams, tokenizer):
 
 if __name__ == "__main__":
     # CLI:
-    hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:])
+    hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:]) #.core if fail
 
     # create ddp_group with the right communication protocol
     sb.utils.distributed.ddp_init_group(run_opts)
@@ -327,13 +327,13 @@ if __name__ == "__main__":
     asr_brain.tokenizer = tokenizer
 
     # Training
-    asr_brain.fit(
-        asr_brain.hparams.epoch_counter,
-        train_data,
-        valid_data,
-        train_loader_kwargs=hparams["train_loader_kwargs"],
-        valid_loader_kwargs=hparams["valid_loader_kwargs"],
-    )
+    # asr_brain.fit(
+    #     asr_brain.hparams.epoch_counter,
+    #     train_data,
+    #     valid_data,
+    #     train_loader_kwargs=hparams["train_loader_kwargs"],
+    #     valid_loader_kwargs=hparams["valid_loader_kwargs"],
+    # )
 
     # Testing
     os.makedirs(hparams["output_wer_folder"], exist_ok=True)

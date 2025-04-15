@@ -11,10 +11,10 @@
 
 # Load modules:
 module load miniconda3
-conda activate /scratch/mfron/IST-ASR
+conda activate /scratch/mfron/IST-LAB/IST-ASR-3
 
 module load 2023r1
-module load cuda/11.6
+module load cuda/12.5
 module load openmpi
 module load py-torch/1.12.1
 module load py-pip

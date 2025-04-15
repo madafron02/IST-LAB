@@ -10,10 +10,15 @@
 #SBATCH --account=education-eemcs-courses-dsait4095
 
 # Load modules:
-conda activate /scratch/mfron/IST-LAB/setup/ist-env
+module load miniconda3
+
+# unset CONDA_SHLVL
+# source "$(conda info --base)/etc/profile.d/conda.sh"
+
+conda activate /scratch/mfron/IST-LAB/IST-ASR-3
 
 module load 2023r1
-module load cuda/11.6
+module load cuda/12.5
 module load openmpi
 module load py-torch/1.12.1
 module load py-pip
@@ -22,10 +27,11 @@ module load py-pyyaml
 module load py-tqdm
 module load ffmpeg
 
-srun python -m pip install -r packages.txt
+# srun python -m pip install -r setup/packages.txt
 
-srun python version_check.py
+python setup/version_check.py
 
-conda list
+# conda list
+# pip list
 
 conda deactivate
