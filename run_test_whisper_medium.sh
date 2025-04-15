@@ -20,7 +20,7 @@ module load py-pyyaml
 module load py-tqdm
 module load ffmpeg
 module load miniconda3
-conda activate /scratch/mfron/IST-LAB/IST-ASR-3
+conda activate /scratch/kmjones/IST-LAB
 
 
 python train_with_whisper.py hparams/train_whisper_lora.yaml --test_only

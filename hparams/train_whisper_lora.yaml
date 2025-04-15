@@ -23,8 +23,8 @@ whisper_folder: !ref <save_folder>/whisper_checkpoint
 normalized_transcripts: True
 
 # Data files
-csv_folder: /scratch/mfron/IST-LAB/data 
-data_folder: /scratch/mfron/IST-LAB/JASMIN/kaldi_processed # e,g./path/to/LibriSpeech
+csv_folder: /scratch/kmjones/IST_LAB/data
+data_folder: /scratch/kmjones/IST_LAB/kaldi_procesed # e,g./path/to/LibriSpeech
 train_splits: [""]
 dev_splits: [""]
 test_splits: ["test_DT_read", "test_DT_hmi", "test_NnT_read", "test_NnT_hmi"]
