@@ -117,7 +117,7 @@ epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter
 ############################## Models ##########################################
 
 whisper_pretrained: !new:speechbrain.lobes.models.huggingface_transformers.whisper.Whisper
-    source: !ref <whisper_hub> #???
+    source: /home/kmjones/.cache/huggingface/hub/models--openai--whisper-medium/snapshots/abdf7c39ab9d0397620ccaea8974cc764cd0953e #???
     freeze_encoder: !ref <freeze_encoder>
     save_path: !ref <whisper_folder>
     language: "nl"

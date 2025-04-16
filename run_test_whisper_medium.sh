@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=test_asr_whisper
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:05:00
+#SBATCH --partition=gpu-a100
+#SBATCH --time=03:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus-per-task=1
@@ -18,10 +18,9 @@ module load py-pip
 module load py-numpy
 module load py-pyyaml
 module load py-tqdm
-module load ffmpeg
 module load miniconda3
-conda activate /scratch/kmjones/IST-LAB
-
+module load ffmpeg
+conda activate /home/kmjones/.conda/envs/example
 
 python train_with_whisper.py hparams/train_whisper_lora.yaml --test_only
 

@@ -265,7 +265,7 @@ def dataio_prepare(hparams, tokenizer):
 
 if __name__ == "__main__":
     # CLI:
-    hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:]) #.core if fail
+    hparams_file, run_opts, overrides = sb.parse_arguments(sys.argv[1:]) #.sb.if fail
 
     # create ddp_group with the right communication protocol
     sb.utils.distributed.ddp_init_group(run_opts)
@@ -281,22 +281,22 @@ if __name__ == "__main__":
     )
 
     # Dataset prep (parsing Librispeech)
-    from librispeech_prepare import prepare_librispeech  # noqa
+    # from librispeech_prepare import prepare_librispeech  # noqa
 
-    # # multi-gpu (ddp) save data preparation
-    run_on_main(
-        prepare_librispeech,
-        kwargs={
-            "data_folder": hparams["data_folder"],
-            "tr_splits": hparams["train_splits"],
-            "dev_splits": hparams["dev_splits"],
-            "te_splits": hparams["test_splits"],
-            "save_folder": hparams["output_folder"],
-            "merge_lst": hparams["train_splits"],
-            "merge_name": "train.csv",
-            "skip_prep": hparams["skip_prep"],
-        },
-    )
+    # # # multi-gpu (ddp) save data preparation
+    # run_on_main(
+    #     prepare_librispeech,
+    #     kwargs={
+    #         "data_folder": hparams["data_folder"],
+    #         "tr_splits": hparams["train_splits"],
+    #         "dev_splits": hparams["dev_splits"],
+    #         "te_splits": hparams["test_splits"],
+    #         "save_folder": hparams["output_folder"],
+    #         "merge_lst": hparams["train_splits"],
+    #         "merge_name": "train.csv",
+    #         "skip_prep": hparams["skip_prep"],
+    #     },
+    # )
 
     # Defining tokenizer and loading it
     tokenizer = hparams["whisper"].tokenizer
