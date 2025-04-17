@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=test_asr_whisper
+#SBATCH --job-name=wpr_l_long
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:45:00
+#SBATCH --time=03:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1

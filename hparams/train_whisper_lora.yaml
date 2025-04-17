@@ -7,16 +7,15 @@
 # Seed needs to be set at top of yaml, before objects with parameters are made
 seed: 1986
 __set_seed: !apply:speechbrain.utils.seed_everything [!ref <seed>]
-output_folder: !ref results/whisper/<seed>
+output_folder: !ref results/whisper_large/<seed>
 output_wer_folder: !ref <output_folder>/
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
 
 # URL for the whisper model
 # Remove .nl if it doesn't work
-whisper_hub: openai/whisper-medium
+whisper_hub: openai/whisper-large-v3-turbo
 whisper_folder: !ref <save_folder>/whisper_checkpoint
-
 
 # Normalize the english inputs with
 # the same normalization done in the paper
@@ -117,7 +116,7 @@ epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter
 ############################## Models ##########################################
 
 whisper_pretrained: !new:speechbrain.lobes.models.huggingface_transformers.whisper.Whisper
-    source: /home/kmjones/.cache/huggingface/hub/models--openai--whisper-medium/snapshots/abdf7c39ab9d0397620ccaea8974cc764cd0953e #???
+    source: /home/kmjones/.cache/huggingface/hub/models--openai--whisper-large-v3-turbo/snapshots/41f01f3fe87f28c78e2fbf8b568835947dd65ed9
     freeze_encoder: !ref <freeze_encoder>
     save_path: !ref <whisper_folder>
     language: "nl"
