@@ -23,6 +23,7 @@ Authors
 """
 import os
 import sys
+import json
 from pathlib import Path
 
 import torch
@@ -288,40 +289,65 @@ def dataio_prepare(hparams):
         return sig
 
     sb.dataio.dataset.add_dynamic_item(datasets, audio_pipeline)
-    label_encoder = sb.dataio.encoder.CTCTextEncoder()
+    #label_encoder = sb.dataio.encoder.CTCTextEncoder()
+    #label_encoder.load_from_json("/home/kmjones/.cache/huggingface/hub/models--facebook--wav2vec2-large-xlsr-53-dutch/snapshots/ced00f8603b017d58cb3bcb3883e8c28f19ccdb4/vocab.json")
+
+
+
+
+    # Load your vocab.json
+    with open("/home/kmjones/.cache/huggingface/hub/models--facebook--wav2vec2-large-xlsr-53-dutch/snapshots/ced00f8603b017d58cb3bcb3883e8c28f19ccdb4/vocab.json", "r", encoding="utf-8") as f:
+        vocab_dict = json.load(f)
+
+    # Create a CTCTextEncoder using the loaded vocab
+    # The vocab should be a dictionary of {token: index}
+    label_encoder = sb.dataio.encoder.CTCTextEncoder(vocab_list=list(vocab_dict.keys()))
+
+
+
+
 
     # 3. Define text pipeline:
-    @sb.utils.data_pipeline.takes("wrd")
-    @sb.utils.data_pipeline.provides(
-        "wrd", "char_list", "tokens_list", "tokens"
-    )
-    def text_pipeline(wrd):
-        yield wrd
-        char_list = list(wrd)
-        yield char_list
-        tokens_list = label_encoder.encode_sequence(char_list)
-        yield tokens_list
-        tokens = torch.LongTensor(tokens_list)
-        yield tokens
+    #@sb.utils.data_pipeline.takes("wrd")
+    #@sb.utils.data_pipeline.provides(
+    #    "wrd", "char_list", "tokens_list", "tokens"
+    #)
+    # def text_pipeline(wrd):
+    #     yield wrd
+    #     char_list = list(wrd)
+    #     yield char_list
+    #     tokens_list = label_encoder.encode_sequence(char_list)
+    #     yield tokens_list
+    #     tokens = torch.LongTensor(tokens_list)
+    #     yield tokens
 
-    sb.dataio.dataset.add_dynamic_item(datasets, text_pipeline)
+    # sb.dataio.dataset.add_dynamic_item(datasets, text_pipeline)
 
-    lab_enc_file = os.path.join(hparams["save_folder"], "label_encoder.txt")
-    special_labels = {
-        "blank_label": hparams["blank_index"],
-    }
-    label_encoder.load_or_create(
-        path=lab_enc_file,
-        from_didatasets=[train_data],
-        output_key="char_list",
-        special_labels=special_labels,
-        sequence_input=True,
-    )
+    # lab_enc_file = "/home/kmjones/.cache/huggingface/hub/models--facebook--wav2vec2-large-xlsr-53-dutch/snapshots/ced00f8603b017d58cb3bcb3883e8c28f19ccdb4/vocab.json"
+    # special_labels = {
+    #     "blank_label": hparams["blank_index"],
+    # }
+    # label_encoder.load_or_create(
+    #     path=lab_enc_file,
+    #     from_didatasets=[train_data],
+    #     output_key="char_list",
+    #     special_labels=special_labels,
+    #     sequence_input=True,
+    # )
+    
+    
+    # Load your vocab.json
+    with open("/home/kmjones/.cache/huggingface/hub/models--facebook--wav2vec2-large-xlsr-53-dutch/snapshots/ced00f8603b017d58cb3bcb3883e8c28f19ccdb4/vocab.json", "r", encoding="utf-8") as f:
+        vocab_dict = json.load(f)
+
+    # Create a CTCTextEncoder using the loaded vocab
+    # The vocab should be a dictionary of {token: index}
+    label_encoder = sb.dataio.encoder.CTCTextEncoder(vocab_list=list(vocab_dict.keys()))
 
     # 4. Set output:
     sb.dataio.dataset.set_output_keys(
-        datasets,
-        ["id", "sig", "wrd", "char_list", "tokens"],
+       datasets,
+       ["id", "sig", "wrd"],
     )
 
     return train_data, valid_data, test_datasets, label_encoder

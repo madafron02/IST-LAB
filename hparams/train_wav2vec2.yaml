@@ -296,8 +296,8 @@ freeze_wav2vec: True
 #output_neurons: 40  # BPE size, index(blank/eos/bos) = 0
 #blank_index: 0
 output_neurons: 40 # 39phs+blank+eos+bos
-bos_index: 0
-eos_index: 1
+#bos_index: 1
+#eos_index: 2
 blank_index: 0
 #
 # Functions and classes
