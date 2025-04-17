@@ -22,6 +22,6 @@ module load miniconda3
 module load ffmpeg
 conda activate /home/kmjones/.conda/envs/example
 
-python train_wav2vec2.py hparams/train_wav2vec2.yaml --test_only
+python train_with_wav2vec.py hparams/train_wav2vec2.yaml --test_only
 
 conda deactivate

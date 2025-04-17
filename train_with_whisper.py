@@ -318,7 +318,7 @@ if __name__ == "__main__":
     # We load the pretrained whisper model
     if "pretrainer" in hparams.keys():
         hparams["pretrainer"].collect_files()
-        hparams["pretrainer"].load_collected(asr_brain.device) #TODO we removed asr_brain.device from arg
+        hparams["pretrainer"].load_collected(asr_brain.device) 
 
     # print(hparams["pretrainer"])
 
