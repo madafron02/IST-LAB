@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=test_asr_whisper
-#SBATCH --partition=gpu-a100
-#SBATCH --time=03:00:00
+#SBATCH --job-name=test_asr_wav2vec2
+#SBATCH --partition=gpu-a100-small
+#SBATCH --time=00:05:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -22,6 +22,6 @@ module load miniconda3
 module load ffmpeg
 conda activate /home/kmjones/.conda/envs/example
 
-python train_with_whisper.py hparams/train_whisper_lora.yaml --test_only
+python train_wav2vec2.py hparams/train_wav2vec2.yaml --test_only
 
 conda deactivate
